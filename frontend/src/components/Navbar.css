@@ -1,0 +1,108 @@
+/* Navbar.css */
+
+/* Base Styles (Light Mode) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: #f8fafc;
+  border-radius: 1rem;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  transition: color 0.3s ease;
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.history-button,
+.logout-button {
+  padding: 0.6rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.history-button {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.history-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.logout-button {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.logout-button:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.dark-mode-toggle {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1e293b;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.dark-mode-toggle:hover {
+  color: #334155;
+  transform: scale(1.1);
+}
+
+/* Dark Mode Styles */
+.dark .navbar {
+  background-color: #1e293b;
+}
+
+.dark .logo {
+  color: #f1f5f9;
+}
+
+.dark .navbar-actions .history-button {
+  background-color: #3b82f6;
+}
+
+.dark .navbar-actions .logout-button {
+  background-color: #ef4444;
+}
+
+.dark .history-button:hover {
+  background-color: #2563eb;
+}
+
+.dark .logout-button:hover {
+  background-color: #dc2626;
+}
+
+.dark .navbar-actions button {
+  color: #f1f5f9;
+}
+
+.dark .dark-mode-toggle {
+  color: #f1f5f9;
+}
+
+.dark .dark-mode-toggle:hover {
+  color: #cbd5e1;
+}

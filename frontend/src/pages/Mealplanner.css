@@ -1,0 +1,118 @@
+/* Base Styles (Light Mode) */
+.mealPlanInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f8fafc;
+    border-radius: 1rem;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  
+  .inputField {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .inputField:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+  
+  .generateButton {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .generateButton:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+  }
+  
+  .mealPlanResults {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .dayCard {
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .dayCard h3 {
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+  }
+  
+  .dayCard ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+  
+  .dayCard li {
+    font-size: 0.9rem;
+    color: #334155;
+    margin-bottom: 0.25rem;
+  }
+  
+  .nutrients {
+    font-size: 0.85rem;
+    color: #475569;
+  }
+  
+  /* Dark Mode Overrides */
+  .dark .mealPlanInput {
+    background-color: #1e293b;
+  }
+  
+  .dark .inputField {
+    background-color: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+  
+  .dark .inputField:focus {
+    border-color: #3b82f6;
+  }
+  
+  .dark .generateButton {
+    background-color: #3b82f6;
+  }
+  
+  .dark .generateButton:hover {
+    background-color: #2563eb;
+  }
+  
+  .dark .dayCard {
+    background-color: #334155;
+  }
+  
+  .dark .dayCard h3,
+  .dark .dayCard li,
+  .dark .nutrients {
+    color: #f1f5f9;
+  }
+  

@@ -1,0 +1,9 @@
+@import "tailwindcss";
+/* src/index.css or src/tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* You can add custom components or overrides here */
+}
