@@ -178,26 +178,28 @@ function Home() {
             )}
 
             <div className="favorite-table-container">
-                <table className="table">
-                <thead>
-                    <tr>
-                    <th>Title</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {favorites.map(fav => (
-                    <tr key={fav.id}>
-                    <td>{fav.title}</td>
-                    <td>
-                    <button onClick={() => deleteFavorite(fav.id)} className="favorites-button">
-                    Delete
-                    </button>
-                </td>
-                </tr>
-                ))}
-                </tbody>
-                </table>
+            <table className="table">
+  {favorites.length > 0 && (
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+  )}
+  <tbody>
+    {favorites.map(fav => (
+      <tr key={fav.id}>
+        <td>{fav.title}</td>
+        <td>
+          <button onClick={() => deleteFavorite(fav.id)} className="favorites-button">
+            Delete
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
             </div>
                 <div className="MealPlanner-Container">
                     <Mealplanner />

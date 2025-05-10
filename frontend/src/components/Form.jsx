@@ -73,6 +73,7 @@ function Form({ route, method }) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <h1>{name}</h1>
+  
       <input
         className="form-input"
         type="text"
@@ -80,6 +81,7 @@ function Form({ route, method }) {
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
+  
       <input
         className="form-input"
         type="password"
@@ -87,11 +89,33 @@ function Form({ route, method }) {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      <button className="form-button" type="submit" disabled={loading}>
-        {loading ? "Loading..." : name}
-      </button>
+  
+      <div className="form-buttons">
+        <button className="form-button" type="submit" disabled={loading}>
+          {loading ? "Loading..." : name}
+        </button>
+  
+        {method === "login" ? (
+          <button
+            type="button"
+            className="form-button"
+            onClick={() => navigate("/register")}
+          >
+            Go to Register
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="form-button"
+            onClick={() => navigate("/login")}
+          >
+            Go to Login
+          </button>
+        )}
+      </div>
     </form>
   );
+  
 }
 
 export default Form;

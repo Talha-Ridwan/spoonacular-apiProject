@@ -30,7 +30,7 @@ function Mealplanner() {
 
   return (
     <div>
-      <Navbar />
+
 
       <div className="mealPlanInput">
         <input
