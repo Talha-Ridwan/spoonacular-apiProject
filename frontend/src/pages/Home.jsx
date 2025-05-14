@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";  
-import apiWrapper from "../api";  
+import Navbar from "../components/Navbar";
+import apiWrapper from "../api";
 const { api, secondApi } = apiWrapper;
-import "./Home.css";  
+import "./Home.css";
 import { REFREST_TOKEN } from "../constants";
 import Mealplanner from "./Mealplanner";
-function Home() {
 
+function Home() {
     const [ingredients, setIngredients] = useState("");
     const [sliderValue, setSliderValue] = useState(3);
     const [recipes, setRecipes] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
     const [favorites, setFavorites] = useState([]);
+    const [iframeUrl, setIframeUrl] = useState("");
+    const [showIframe, setShowIframe] = useState(false);
 
     const ingredientPool = [
-        "egg", "chicken", "fish", "beef", "lamb", 
-        "tomato", "onion", "garlic", "potato", "carrot", 
+        "egg", "chicken", "fish", "beef", "lamb",
+        "tomato", "onion", "garlic", "potato", "carrot",
         "broccoli", "spinach", "pepper", "cheese", "mushroom"
     ];
 
@@ -33,22 +35,16 @@ function Home() {
                 }
             });
 
-            setRecipes(data); 
+            setRecipes(data);
             setShowPopup(true);
-
         } catch (error) {
             console.error("Error fetching recipes:", error);
         }
     };
 
     const handleRandomRecipe = async () => {
-        const randomIngredients = [];
         const shuffled = [...ingredientPool].sort(() => 0.5 - Math.random());
-
-        for (let i = 0; i < 10; i++) {
-            randomIngredients.push(shuffled[i]);
-        }
-
+        const randomIngredients = shuffled.slice(0, 10);
         const ing = randomIngredients.join(",");
 
         try {
@@ -61,7 +57,6 @@ function Home() {
 
             setRecipes(data);
             setShowPopup(true);
-
         } catch (error) {
             console.error("Error fetching random recipes:", error);
         }
@@ -74,9 +69,10 @@ function Home() {
         try {
             await api.post("/api/favorites/", {
                 title: recipe.title,
-                owner: decoded.user_id
+                owner: decoded.user_id,
+                food_id: recipe.id
             });
-            fetchFavorites(); // Refresh favorites after adding
+            fetchFavorites();
         } catch (error) {
             console.error("Error adding to favorites:", error);
         }
@@ -98,10 +94,27 @@ function Home() {
     const deleteFavorite = async (id) => {
         try {
             await api.delete(`/api/favorite/delete/${id}/`);
-            fetchFavorites(); // Refresh favorites after deleting
+            fetchFavorites();
         } catch (error) {
             console.error("Error deleting favorite:", error);
         }
+    };
+
+    const handleShowRecipePage = async (food_id) => {
+        try {
+            const { data } = await secondApi.get(`/recipes/${food_id}/information`, {
+                params: { includeNutrition: false }
+            });
+            setIframeUrl(data.sourceUrl);
+            setShowIframe(true);
+        } catch (error) {
+            console.error("Error loading recipe info:", error);
+        }
+    };
+
+    const closeIframe = () => {
+        setShowIframe(false);
+        setIframeUrl("");
     };
 
     const parseJwt = (token) => {
@@ -110,9 +123,9 @@ function Home() {
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(
             atob(base64)
-            .split('')
-            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-            .join('')
+                .split('')
+                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
         );
         return JSON.parse(jsonPayload);
     };
@@ -124,8 +137,9 @@ function Home() {
     return (
         <div className="home-container">
             <div className="navigation-bar">
-                <Navbar /> 
-            </div>   
+                <Navbar />
+            </div>
+
             <div className="recipe-search-container">
                 <div className="recipe-search">
                     <input
@@ -161,9 +175,7 @@ function Home() {
                                     <div key={recipe.id} className="recipe-item">
                                         <h2>{recipe.title}</h2>
                                         <img src={recipe.image} alt={recipe.title} width={100} className="recipe-image" />
-                                        <p>Missing Ingredients: 
-                                            {recipe.missedIngredients.map(i => i.name).join(', ')}
-                                        </p>
+                                        <p>Missing Ingredients: {recipe.missedIngredients.map(i => i.name).join(', ')}</p>
                                         <button onClick={() => addToFavorites(recipe)} className="favorites-button">
                                             Add to Favorites
                                         </button>
@@ -178,32 +190,49 @@ function Home() {
             )}
 
             <div className="favorite-table-container">
-            <table className="table">
-  {favorites.length > 0 && (
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-  )}
-  <tbody>
-    {favorites.map(fav => (
-      <tr key={fav.id}>
-        <td>{fav.title}</td>
-        <td>
-          <button onClick={() => deleteFavorite(fav.id)} className="favorites-button">
-            Delete
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+                <table className="table">
+                    {favorites.length > 0 && (
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                    )}
+                    <tbody>
+                        {favorites.map(fav => (
+                            <tr key={fav.id}>
+                                <td>{fav.title}</td>
+                                <td>
+                                    <button onClick={() => deleteFavorite(fav.id)} className="favorites-button">
+                                        Delete
+                                    </button>
+                                    <button onClick={() => handleShowRecipePage(fav.food_id)} className="favorites-button">
+                                        🔍
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-                <div className="MealPlanner-Container">
-                    <Mealplanner />
+
+            {showIframe && (
+                <div className="iframe-modal-overlay">
+                    <div className="iframe-modal-content">
+                        <button onClick={closeIframe} className="iframe-close-button">×</button>
+                        <iframe
+                            src={iframeUrl}
+                            title="Recipe Detail"
+                            className="iframe-content"
+                        />
+                    </div>
                 </div>
+            )}
+
+            <div className="MealPlanner-Container">
+                <Mealplanner />
+            </div>
         </div>
     );
 }

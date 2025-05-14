@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites
-        fields = ["id", "title", "created_at", "owner"]
+        fields = ["id", "title", "created_at", "owner", "food_id"]
         extra_kwargs = {"owner":{"read_only":True}}
 
 class MealPlanSerializer(serializers.ModelSerializer):

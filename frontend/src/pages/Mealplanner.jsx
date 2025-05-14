@@ -1,15 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import apiWrapper from "../api";
 import "./Mealplanner.css";
 
-const { secondApi } = apiWrapper;
+const { api, secondApi } = apiWrapper;
 
 function Mealplanner() {
   const [calories, setCalories] = useState(2000);
   const [diet, setDiet] = useState("None");
   const [mealPlan, setMealPlan] = useState(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMealPlan = async () => {
+      try {
+        const { data } = await api.get("api/mealplanner/get");
+        setMealPlan(data);
+      } catch (e) {
+        if (e.response && e.response.status === 404) {
+          setMealPlan(null);
+        } else {
+          console.error(e);
+          setError("Could not fetch meal plan.");
+        }
+      }
+    };
+    fetchMealPlan();
+  }, []);
 
   const generateMealPlan = async () => {
     setError("");
@@ -21,17 +38,22 @@ function Mealplanner() {
           diet: diet === "None" ? "" : diet,
         },
       });
+      // Save to backend
+      try {
+        await api.post("api/mealplanner/save", data);
+      } catch (saveError) {
+        console.error(saveError);
+        setError("Could not save meal plan, but it is displayed.");
+      }
       setMealPlan(data);
     } catch (e) {
       console.error(e);
-      setError("Could not generate meal plan. Try again.");
+      setError("Could not generate meal plan.");
     }
   };
 
   return (
     <div>
-
-
       <div className="mealPlanInput">
         <input
           className="inputField"
@@ -40,7 +62,6 @@ function Mealplanner() {
           onChange={(e) => setCalories(e.target.value)}
           placeholder="Target calories"
         />
-
         <select
           className="inputField"
           value={diet}
@@ -53,14 +74,11 @@ function Mealplanner() {
           <option value="ketogenic">Ketogenic</option>
           <option value="paleo">Paleo</option>
         </select>
-
         <button className="generateButton" onClick={generateMealPlan}>
           Generate Meal Plan
         </button>
       </div>
-
       {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-
       {mealPlan && (
         <div className="mealPlanResults">
           {Object.entries(mealPlan.week).map(([day, info]) => (

@@ -4,7 +4,6 @@ from . import views
 urlpatterns = [
     path("favorites/", views.FavoriteListCreate.as_view(), name="favorite-list"),
     path("favorite/delete/<int:pk>/", views.FavoritesDelete.as_view(), name="delete-favorites"),
-    path('mealplans/', views.MealPlanListCreate.as_view(), name='mealplan-list-create'),
-    path('mealplans/<int:user_id>/<int:pk>/', views.MealPlanDelete.as_view(), name='mealplan-delete'),
-  
+    path("mealplanner/get", views.GetMealPlanView.as_view(), name="get-meal-plan"),
+    path("mealplanner/save", views.SaveMealPlanView.as_view(), name="save-meal-plan")
 ]

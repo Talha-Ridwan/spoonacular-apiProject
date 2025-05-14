@@ -4,6 +4,8 @@ from rest_framework import generics
 from .serializers import UserSerializer, FavoritesSerializer, MealPlanSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Favorites, MealPlan
+from rest_framework.response import Response
+from rest_framework.views import APIView
 # Create your views here.
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -29,22 +31,24 @@ class FavoritesDelete(generics.DestroyAPIView):
         user = self.request.user
         return Favorites.objects.filter(owner=user)
 
-class MealPlanListCreate(generics.ListCreateAPIView):
-    serializer_class = MealPlanSerializer
-    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return MealPlan.objects.filter(owner=user)
-    
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+class SaveMealPlanView(APIView):
 
-class MealPlanDelete(generics.DestroyAPIView):
-    queryset = MealPlan.objects.all()
-    serializer_class = MealPlanSerializer
-    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        # only allow deletion of plans owned by the logged-in user
-        return super().get_queryset().filter(owner=self.request.user)
+    def post(self, request):
+        meal_plan_data = request.data
+        MealPlan.objects.update_or_create(
+            user=request.user,
+            defaults={'plan_data': meal_plan_data}
+        )
+        return Response({"message": "Meal plan saved"})
+
+class GetMealPlanView(APIView):
+
+
+    def get(self, request):
+        try:
+            meal_plan = MealPlan.objects.get(user=request.user)
+            return Response(meal_plan.plan_data)
+        except MealPlan.DoesNotExist:
+            return Response({"message": "No meal plan found"}, status=404)
